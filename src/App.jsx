@@ -1,17 +1,10 @@
-import './styles/global.css'
+import  { Quiz } from './components/Quiz'
 
-function MyName () {
-  return (
-    <h2>Marcos Castro</h2>
-  )
-}
+import './styles/global.css'
 
 function App() {
   return (
-    <>
-      <h1>Hello world</h1>
-      <MyName />
-    </>
+    <Quiz />
   )
 }
 
