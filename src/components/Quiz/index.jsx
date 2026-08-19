@@ -3,6 +3,7 @@ import { QuestionAnswer } from '../QuestionAnswer'
 
 import { Button } from '../Button'
 import S from './styles.module.css'
+import { Result } from '../Result'
 
 const QUESTIONS = [
   {
@@ -35,6 +36,9 @@ export function Quiz () {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0)
   const [isCurrentQuestionAnswered, setIsCurrentQuestionAnswered] = useState(false)
+  const [isTakingQuiz, setIsTakingQuiz] = useState(true)
+
+  const quizSize = QUESTIONS.length
 
   const handleAnswerQuestion = (event, question, answer) => {
     if (isCurrentQuestionAnswered) {
@@ -54,19 +58,29 @@ export function Quiz () {
   }
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex + 1 < QUESTIONS.length) {
+    if (currentQuestionIndex + 1 < quizSize) {
       setCurrentQuestionIndex(index => index + 1)
-    } 
+    } else {
+      setIsTakingQuiz(false)
+    }
 
     setIsCurrentQuestionAnswered(false)
   }
 
+  const handleTryAgain = () => {
+    setIsTakingQuiz(true)
+    setCorrectAnswersCount(0)
+    setCurrentQuestionIndex(0)
+  }
+
   const currentQuestion = QUESTIONS[currentQuestionIndex];
+  const navigationButtonText = currentQuestionIndex + 1 === quizSize ? 'Ver resultado' : 'Próxima pergunta'
 
   return (
     <div className={S.container}>
       <div className={S.card}>
-        <div className={S.quiz}>
+        {isTakingQuiz ? (
+          <div className={S.quiz}>
           <header className={S.quizHeader}>
             <span className={S.questionCount}>PERGUNTA 1/3</span>
             <p className={S.question}>
@@ -87,9 +101,18 @@ export function Quiz () {
           </ul>
 
           {isCurrentQuestionAnswered && (
-            <Button onClick={handleNextQuestion}>Próxima pergunta</Button>
+            <Button onClick={handleNextQuestion}>
+              {navigationButtonText}
+            </Button>
           )}
         </div>
+        ) : (
+          <Result 
+            correctAnswersCount={correctAnswersCount}
+            quizSize={quizSize} 
+            handleTryAgain={handleTryAgain}
+          />
+        )}
       </div>
     </div>
   )
